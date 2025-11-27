@@ -1,44 +1,54 @@
 #include <iostream>
 using namespace std;
-int find_missing_linear(int arr[], int n)
-{
-    int total = (n + 1) * (n + 2) / 2;
-    for (int i = 0; i < n; i++)
-    {
-        total -= arr[i];
-    }
-    return total;
+
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+TreeNode* insert(TreeNode* root, int key) {
+    if (!root) return new TreeNode(key);
+    if (key < root->val) root->left = insert(root->left, key);
+    else if (key > root->val) root->right = insert(root->right, key);
+    return root;
 }
-int find_missing_binary(int arr[], int n)
-{
-    int low = 0, high = n - 1;
-    while (low <= high)
-    {
-        int mid = (low + high) / 2;
-        if (arr[mid] != mid + 1)
-        {
-            if (mid > 0 && arr[mid - 1] == mid)
-                return mid + 1;
-            high = mid - 1;
-        }
-        else
-        {
-            low = mid + 1;
-        }
+
+TreeNode* deleteNode(TreeNode* root, int key) {
+    if (!root) return nullptr;
+    if (key < root->val) root->left = deleteNode(root->left, key);
+    else if (key > root->val) root->right = deleteNode(root->right, key);
+    else {
+        if (!root->left) return root->right;
+        if (!root->right) return root->left;
+        TreeNode* temp = root->right;
+        while (temp->left) temp = temp->left;
+        root->val = temp->val;
+        root->right = deleteNode(root->right, temp->val);
     }
-    return n + 1;
+    return root;
 }
-int main()
-{
-    int n;
-    cout << "Enter n-1: ";
-    cin >> n;
-    int arr[100];
-    cout << "Enter elements: ";
-    for (int i = 0; i < n; i++)
-    {
-        cin >> arr[i];
-    }
-    cout << "Missing number (linear): " << find_missing_linear(arr, n) << endl;
-    cout << "Missing number (binary): " << find_missing_binary(arr, n) << endl;
+
+int maxDepth(TreeNode* root) {
+    if (!root) return 0;
+    return 1 + max(maxDepth(root->left), maxDepth(root->right));
+}
+
+int minDepth(TreeNode* root) {
+    if (!root) return 0;
+    if (!root->left && !root->right) return 1;
+    if (!root->left) return 1 + minDepth(root->right);
+    if (!root->right) return 1 + minDepth(root->left);
+    return 1 + min(minDepth(root->left), minDepth(root->right));
+}
+
+int main() {
+    TreeNode* root = NULL;
+    root = insert(root, 30);
+    root = insert(root, 10);
+    root = insert(root, 50);
+    root = insert(root, 5);
+    root = deleteNode(root, 10);
+    cout << maxDepth(root) << endl;
+    cout << minDepth(root) << endl;
 }

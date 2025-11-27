@@ -1,48 +1,43 @@
 #include <iostream>
 using namespace std;
-int binary_search(int arr[], int size, int target)
-{
-    int beg = 0;
-    int end = size - 1;
-    while (beg <= end)
-    {
-        int mid = (beg + end) / 2;
-        if (arr[mid] == target)
-        {
-            return mid;
-        }
-        else if (arr[mid] > target)
-        {
-            end = mid - 1;
-        }
-        else
-        {
-            beg = mid + 1;
-        }
-    }
-    return -1;
+
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+void preorder(TreeNode* root) {
+    if (!root) return;
+    cout << root->val << " ";
+    preorder(root->left);
+    preorder(root->right);
 }
-int main()
-{
-    int n;
-    int arr[100];
-    cout << "Enter the number of elements: ";
-    cin >> n;
-    cout << "Enter the elements: ";
-    for (int i = 0; i < n; i++)
-    {
-        cin >> arr[i];
-    }
-    int target;
-    cout << "Enter the element to search: ";
-    cin >> target;
-    int result = binary_search(arr, n, target);
-    if (result != -1)
-    {
-        cout << "Element found at index " << result << endl;
-    }
-    else
-    {
-        cout << "Element not found" << endl;
-    }
+
+void inorder(TreeNode* root) {
+    if (!root) return;
+    inorder(root->left);
+    cout << root->val << " ";
+    inorder(root->right);
+}
+
+void postorder(TreeNode* root) {
+    if (!root) return;
+    postorder(root->left);
+    postorder(root->right);
+    cout << root->val << " ";
+}
+
+int main() {
+    TreeNode* root = new TreeNode(10);
+    root->left = new TreeNode(5);
+    root->right = new TreeNode(20);
+    root->left->left = new TreeNode(3);
+    root->left->right = new TreeNode(7);
+
+    preorder(root);
+    cout << endl;
+    inorder(root);
+    cout << endl;
+    postorder(root);
 }
